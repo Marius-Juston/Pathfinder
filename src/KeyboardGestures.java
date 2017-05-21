@@ -49,9 +49,6 @@ enum KeyboardGestures {
     private KeyboardGestures() {
     }
 
-    KeyboardGestures() {
-    }
-
     private static void interpretCommand() {
         if (command[0] && command[1])
             GridLoaderSaver.saveGrid();
