@@ -1,4 +1,6 @@
 import javafx.event.EventHandler;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
@@ -12,7 +14,7 @@ class KeyboardGestures {
     /**
      * Created by Marius Juston on 20/05/2017.
      */
-    //    [0] = Ctrl, [1] = S, [2] = L, [3] = P
+    //    [0] = Ctrl, [1] = S, [2] = L, [3] = N
     private final boolean[] command = {false, false, false, false};
     final EventHandler<? super KeyEvent> onKeyPressedEventHandler = event -> {
         KeyCode keyCode = event.getCode();
@@ -24,6 +26,14 @@ class KeyboardGestures {
         else if (KeyCode.L == keyCode)
             this.command[2] = true;
         else if (KeyCode.P == keyCode)
+        {
+            Main.getGrid().getMg().setCanInteractWith(false);
+            Grid grid = Main.getGrid();
+
+            BreathFirstSearch.breathSearch((Cell) grid.getStarts().toArray()[0], Main.getGrid());
+        }
+
+        else if (KeyCode.N == keyCode)
             this.command[3] = true;
 
         else if (KeyCode.C == keyCode) {
@@ -36,6 +46,7 @@ class KeyboardGestures {
 
     //    Ctrl+S = save the grid into a file
 //    Ctrl+L = loads a grid from a file
+//    Ctrl+N = creates new empty tab
     final EventHandler<? super KeyEvent> onKeyReleasedEventHandler = event -> {
         this.interpretCommand();
         KeyCode keyCode = event.getCode();
@@ -46,7 +57,7 @@ class KeyboardGestures {
             this.command[1] = false;
         else if (KeyCode.L == keyCode)
             this.command[2] = false;
-        else if (KeyCode.P == keyCode)
+        else if (KeyCode.N == keyCode)
             this.command[3] = false;
     };
 
@@ -59,11 +70,9 @@ class KeyboardGestures {
             GridLoaderSaver.saveGrid(this.main);
         else if (this.command[0] && this.command[2])
             GridLoaderSaver.loadGrid(this.main);
-        else if (this.command[3]) {
-            Main.getGrid().getMg().setCanInteractWith(false);
-            Grid grid = Main.getGrid();
-
-            BreathFirstSearch.breathSearch((Cell) grid.getStarts().toArray()[0], Main.getGrid());
+        else if (this.command[0] && this.command[3]){
+            ((TabPane)(main.getScene().getRoot())).getTabs().add(new Tab("Grid " + GridLoaderSaver.getNumberOfUnsavedGrids(), new Grid()));
+            GridLoaderSaver.setNumberOfUnsavedGrids(GridLoaderSaver.getNumberOfUnsavedGrids() + 1);
         }
     }
 

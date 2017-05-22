@@ -1,5 +1,6 @@
 import javafx.scene.layout.Pane;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -16,7 +17,22 @@ class Grid extends Pane {
     private final int maxNumberOfEnds;
     private int ends;
 
-    public Grid(HashSet<Cell> starts, int rows, int columns, int width, int height, int ends, int maxNumberOfStarts, int maxNumberOfEnds, MouseGestures mouseGestures) {
+    private File filePath;
+
+    public Grid() {
+        this(Main.rows, Main.columns, Main.width, Main.height);
+    }
+
+    public void setFilePath(File filePath) {
+        this.filePath = filePath;
+    }
+
+    public File getFilePath() {
+        return filePath;
+    }
+
+
+    public Grid(HashSet<Cell> starts, int rows, int columns, int width, int height, int ends, int maxNumberOfStarts, int maxNumberOfEnds, MouseGestures mouseGestures, File file) {
         this.starts = starts;
         this.rows = rows;
         this.columns = columns;
@@ -28,6 +44,8 @@ class Grid extends Pane {
         this.maxNumberOfEnds = maxNumberOfEnds;
 
         this.mg = mouseGestures;
+
+        filePath = file;
     }
 
     public Grid(int rows, int columns, int width, int height) {
@@ -35,7 +53,7 @@ class Grid extends Pane {
     }
 
     private Grid(int rows, int columns, int width, int height, int maxNumberOfStarts, int maxNumberOfEnds) {
-        this(new HashSet<>(), rows, columns, width, height, 0, maxNumberOfStarts, maxNumberOfEnds, new MouseGestures(true));
+        this(new HashSet<>(), rows, columns, width, height, 0, maxNumberOfStarts, maxNumberOfEnds, new MouseGestures(true), null);
     }
 
     public final MouseGestures getMg() {

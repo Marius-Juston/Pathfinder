@@ -25,12 +25,31 @@ final class GridLoaderSaver {
     private GridLoaderSaver() {
     }
 
+    private static int numberOfUnsavedGrids = 1;
+
+    public static int getNumberOfUnsavedGrids() {
+        return numberOfUnsavedGrids;
+    }
+
+    public static void setNumberOfUnsavedGrids(int numberOfUnsavedGrids) {
+        GridLoaderSaver.numberOfUnsavedGrids = numberOfUnsavedGrids;
+    }
+
     public static void saveGrid(Window owner) {
-        File file = GridLoaderSaver.fileChooser.showSaveDialog(owner);
+
+        File file = null;
+        Grid grid = Main.getGrid();
+
+        if (grid.getFilePath() == null) {
+            file = fileChooser.showOpenDialog(owner);
+
+            if(file != null)
+                numberOfUnsavedGrids--;
+        }
+        else
+            file = grid.getFilePath();
 
         if (file != null) {
-            Grid grid = Main.getGrid();
-
             try {
                 try (BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath())) {
 
@@ -44,6 +63,9 @@ final class GridLoaderSaver {
 
                     bufferedWriter.write(stringBuilder.toString());
                 }
+
+                grid.setFilePath(file);
+                Main.getTab().setText(file.getName());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -76,7 +98,7 @@ final class GridLoaderSaver {
                 MouseGestures mouseGestures = new MouseGestures(game[6].equals("true"));
                 HashSet<Cell> starts = new HashSet<>();
 
-                Grid grid = new Grid(starts, rows, columns, width, height, ends, maxNumberOfStarts, maxNumberOfEnds, mouseGestures);
+                Grid grid = new Grid(starts, rows, columns, width, height, ends, maxNumberOfStarts, maxNumberOfEnds, mouseGestures, file);
 
                 String[] stringCells = game[7].split("");
 

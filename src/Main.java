@@ -12,11 +12,20 @@ public class Main extends Application {
     private static final TabPane root = new TabPane();
     private static Grid grid;
 
+    // create grid
+    static final int height = 800;
+    static final int width = 800;
+    static final int columns = 20;
+    static final int rows = 20;
+
     public Main() {
     }
 
     static Grid getGrid() {
         return (Grid) Main.root.getSelectionModel().getSelectedItem().getContent();
+    }
+    static Tab getTab() {
+        return Main.root.getSelectionModel().getSelectedItem();
     }
 
 
@@ -28,20 +37,22 @@ public class Main extends Application {
     public final void start(Stage primaryStage) {
         Tab tab = new Tab("Main Window");
         Main.root.getTabs().add(tab);
-        Main.root.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        Main.root.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
 
         Main.root.getTabs().addListener((ListChangeListener<? super Tab>) observable -> {
             if (observable.getList().size() == 1)
                 Main.root.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
             else
-                Main.root.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+                Main.root.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
         });
 
-        // create grid
-        int height = 800;
-        int width = 800;
-        int columns = 20;
-        int rows = 20;
+        Main.root.getTabs().addListener((ListChangeListener<? super Tab>) observable -> {
+            observable.next();
+            if (observable.wasRemoved())
+                GridLoaderSaver.setNumberOfUnsavedGrids(GridLoaderSaver.getNumberOfUnsavedGrids() - 1);
+        });
+
+
         Main.grid = new Grid(rows, columns, width, height);
 
         // fill grid
