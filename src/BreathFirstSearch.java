@@ -20,6 +20,7 @@ final class BreathFirstSearch {
 
         while (!frontier.isEmpty()) {
             current = frontier.pollFirst();
+
             if (Point.EMPTY == current.getPoint()) {
                 current.getStyleClass().remove("looking-cell");
                 current.getStyleClass().add("looking-cell");
@@ -29,8 +30,9 @@ final class BreathFirstSearch {
             if (Point.END == current.getPoint())
                 break;
 
-            for (Cell next : neighbors(current, grid)) {
+            for (Cell next : BreathFirstSearch.neighbors(current, grid)) {
                 Cell finalCurrent = current;
+
                 came_from.computeIfAbsent(next, cell -> {
                     frontier.add(next);
                     return finalCurrent;
@@ -38,7 +40,7 @@ final class BreathFirstSearch {
             }
         }
 //        System.out.println(came_from);
-        createPath(start, current, came_from);
+        BreathFirstSearch.createPath(start, current, came_from);
     }
 
     private static int createPath(Cell start, Cell goal, Map<Cell, Cell> came_from) {

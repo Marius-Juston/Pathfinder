@@ -3,7 +3,7 @@
     -fx-border-width: 1px;
 }
 
-.wall{
+.wall-cell{
     -fx-background-color:derive(black,.9);
 }
 .start-cell {

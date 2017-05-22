@@ -3,10 +3,10 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 class MouseGestures {
-    private boolean canInteractWith = true;
+    private boolean canInteractWith;
     private final EventHandler<MouseEvent> onMousePressedEventHandler = event -> {
 
-        if (canInteractWith) {
+        if (this.canInteractWith) {
             Cell cell = (Cell) event.getSource();
 
             if (event.isMiddleButtonDown()) {
@@ -19,7 +19,7 @@ class MouseGestures {
         }
     };
     private final EventHandler<MouseEvent> onDragDetectedEventHandler = event -> {
-        if (canInteractWith) {
+        if (this.canInteractWith) {
             Cell cell = (Cell) event.getSource();
 
             if (event.isMiddleButtonDown())
@@ -29,7 +29,7 @@ class MouseGestures {
         }
     };
     private final EventHandler<MouseEvent> onMouseDragEnteredEventHandler = event -> {
-        if (canInteractWith) {
+        if (this.canInteractWith) {
             Cell cell = (Cell) event.getSource();
 
             if (event.isMiddleButtonDown())
@@ -38,11 +38,19 @@ class MouseGestures {
         }
     };
 
-    public void setCanInteractWith(boolean canInteractWith) {
+    public MouseGestures(boolean canInteractWith) {
         this.canInteractWith = canInteractWith;
     }
 
-    public void makePaintable(Node node) {
+    public final boolean isCanInteractWith() {
+        return this.canInteractWith;
+    }
+
+    public final void setCanInteractWith(boolean canInteractWith) {
+        this.canInteractWith = canInteractWith;
+    }
+
+    public final void makePaintable(Node node) {
 
 
         // that's all there is needed for hovering, the other code is just for painting
@@ -54,19 +62,19 @@ class MouseGestures {
             }
         });
 
-        node.setOnMousePressed(onMousePressedEventHandler);
-        node.setOnDragDetected(onDragDetectedEventHandler);
-        node.setOnMouseDragEntered(onMouseDragEnteredEventHandler);
+        node.setOnMousePressed(this.onMousePressedEventHandler);
+        node.setOnDragDetected(this.onDragDetectedEventHandler);
+        node.setOnMouseDragEntered(this.onMouseDragEnteredEventHandler);
 
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "MouseGestures{" +
-                "canInteractWith=" + canInteractWith +
-                ", onMousePressedEventHandler=" + onMousePressedEventHandler +
-                ", onDragDetectedEventHandler=" + onDragDetectedEventHandler +
-                ", onMouseDragEnteredEventHandler=" + onMouseDragEnteredEventHandler +
+                "canInteractWith=" + this.canInteractWith +
+                ", onMousePressedEventHandler=" + this.onMousePressedEventHandler +
+                ", onDragDetectedEventHandler=" + this.onDragDetectedEventHandler +
+                ", onMouseDragEnteredEventHandler=" + this.onMouseDragEnteredEventHandler +
                 '}';
     }
 }

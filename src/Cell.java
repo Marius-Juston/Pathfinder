@@ -4,56 +4,63 @@ class Cell extends StackPane {
 
     int column;
     int row;
-    private Point point = Point.EMPTY;
+    private Point point;
+
 
     Cell(int column, int row) {
+        this(column, row, Point.EMPTY);
+    }
 
-        this.column = column;
-        this.row = row;
+    public Cell(int columns, int rows, Point point) {
+        this.column = columns;
+        this.row = rows;
+        this.point = point;
+        this.getStyleClass().add("cell");
+        this.setOpacity(0.9);
 
-        getStyleClass().add("cell");
-        setOpacity(0.9);
+        if (point != Point.EMPTY)
+            this.getStyleClass().add(point.name().toLowerCase() + "-cell");
     }
 
     public final Point getPoint() {
-        return point;
+        return this.point;
     }
 
     final void toggleWall() {
-        if (Point.WALL == point) {
-            getStyleClass().remove("wall");
-            point = Point.EMPTY;
-        } else {
-            getStyleClass().remove("wall");
-            getStyleClass().add("wall");
-            point = Point.WALL;
+        if (Point.WALL == this.point) {
+            this.getStyleClass().remove("wall-cell");
+            this.point = Point.EMPTY;
+        } else if (Point.EMPTY == this.point) {
+            this.getStyleClass().remove("wall-cell");
+            this.getStyleClass().add("wall-cell");
+            this.point = Point.WALL;
         }
 
     }
 
     final void hoverHighlight() {
         // ensure the style is only once in the style list
-        getStyleClass().remove("cell-hover-highlight");
+        this.getStyleClass().remove("cell-hover-highlight");
 
         // add style
-        getStyleClass().add("cell-hover-highlight");
+        this.getStyleClass().add("cell-hover-highlight");
     }
 
     final void hoverUnhighlight() {
-        getStyleClass().remove("cell-hover-highlight");
+        this.getStyleClass().remove("cell-hover-highlight");
     }
 
     final void toggleStart() {
-        if (Point.START == point) {
-            getStyleClass().remove("start-cell");
-            point = Point.EMPTY;
+        if (Point.START == this.point) {
+            this.getStyleClass().remove("start-cell");
+            this.point = Point.EMPTY;
 
             Main.getGrid().getStarts().remove(this);
         } else if (Main.getGrid().getStarts().size() < Main.getGrid().getMaxNumberOfStarts()) {
-            if (Point.EMPTY == point) {
-                getStyleClass().remove("start-cell");
-                getStyleClass().add("start-cell");
-                point = Point.START;
+            if (Point.EMPTY == this.point) {
+                this.getStyleClass().remove("start-cell");
+                this.getStyleClass().add("start-cell");
+                this.point = Point.START;
 
                 Main.getGrid().getStarts().add(this);
             }
@@ -61,16 +68,16 @@ class Cell extends StackPane {
     }
 
     final void toggleEnd() {
-        if (Point.END == point) {
-            getStyleClass().remove("end-cell");
+        if (Point.END == this.point) {
+            this.getStyleClass().remove("end-cell");
 
-            point = Point.EMPTY;
+            this.point = Point.EMPTY;
             Main.getGrid().setEnds(Main.getGrid().getEnds() - 1);
         } else if (Main.getGrid().getEnds() < Main.getGrid().getMaxNumberOfEnds()) {
-            if (Point.EMPTY == point) {
-                getStyleClass().remove("end-cell");
-                getStyleClass().add("end-cell");
-                point = Point.END;
+            if (Point.EMPTY == this.point) {
+                this.getStyleClass().remove("end-cell");
+                this.getStyleClass().add("end-cell");
+                this.point = Point.END;
 
                 Main.getGrid().setEnds(Main.getGrid().getEnds() + 1);
             }
@@ -78,11 +85,7 @@ class Cell extends StackPane {
     }
 
     @Override
-    public String toString() {
-        return "Cell{" +
-                "column=" + column +
-                ", row=" + row +
-                ", point=" + point +
-                '}';
+    public final String toString() {
+        return this.row + "," + this.column + this.point;
     }
 }

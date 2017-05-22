@@ -1,42 +1,48 @@
 import javafx.application.Application;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    private static final MouseGestures mg = new MouseGestures();
+
+    private static final TabPane root = new TabPane();
     private static Grid grid;
 
     public Main() {
     }
 
-    static MouseGestures getMg() {
-        return mg;
-    }
-
     static Grid getGrid() {
-        return grid;
+        return (Grid) Main.root.getSelectionModel().getSelectedItem().getContent();
     }
 
 
     public static void main(String[] args) {
-        launch(args);
+        Application.launch(args);
     }
 
     @Override
     public final void start(Stage primaryStage) {
         Tab tab = new Tab("Main Window");
-        TabPane root = new TabPane(tab);
+        Main.root.getTabs().add(tab);
+        Main.root.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
+        Main.root.getTabs().addListener((ListChangeListener<? super Tab>) observable -> {
+            if (observable.getList().size() == 1)
+                Main.root.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+            else
+                Main.root.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+        });
 
         // create grid
-        double height = 800;
-        double width = 800;
+        int height = 800;
+        int width = 800;
         int columns = 20;
         int rows = 20;
-        grid = new Grid(rows, columns, width, height);
+        Main.grid = new Grid(rows, columns, width, height);
 
         // fill grid
         for (int row = 0; rows > row; row++) {
@@ -44,20 +50,21 @@ public class Main extends Application {
 
                 Cell cell = new Cell(column, row);
 
-                mg.makePaintable(cell);
-                grid.add(cell);
+                Main.grid.getMg().makePaintable(cell);
+                Main.grid.add(cell);
             }
         }
 
-        tab.setContent(grid);
-
+        tab.setContent(Main.grid);
 
         // create scene and stage
-        Scene scene = new Scene(root, width - 5, height + 25);
-        scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+        Scene scene = new Scene(Main.root, width - 5, height + 25);
+        scene.getStylesheets().add(this.getClass().getResource("application.css").toExternalForm());
 
-        scene.setOnKeyPressed(KeyboardGestures.onKeyPressedEventHandler);
-        scene.setOnKeyReleased(KeyboardGestures.onKeyReleasedEventHandler);
+        KeyboardGestures kb = new KeyboardGestures(primaryStage);
+
+        scene.setOnKeyPressed(kb.onKeyPressedEventHandler);
+        scene.setOnKeyReleased(kb.onKeyReleasedEventHandler);
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -65,7 +72,7 @@ public class Main extends Application {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "Main{}";
     }
 }
