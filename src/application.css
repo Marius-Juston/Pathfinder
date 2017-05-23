@@ -7,16 +7,16 @@
     -fx-background-color:derive(black,.9);
 }
 .start-cell {
-    -fx-background-color:derive(green,.9);
+    -fx-background-color:derive(green,.6);
 }
 .end-cell {
-    -fx-background-color:derive(red,.9);
+    -fx-background-color:derive(red,.6);
 }
 .path-cell {
      -fx-background-color:derive(blue,.9);
  }
  .looking-cell {
-      -fx-background-color:derive(orange,.9);
+      -fx-background-color:derive(teal,1);
   }
 
 .cell-hover-highlight {

@@ -1,11 +1,13 @@
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 class Cell extends StackPane {
 
+    private final Label label;
     int column;
     int row;
     private Point point;
-
 
     Cell(int column, int row) {
         this(column, row, Point.EMPTY);
@@ -18,12 +20,25 @@ class Cell extends StackPane {
         this.getStyleClass().add("cell");
         this.setOpacity(0.9);
 
+        label = new Label();
+
+        getChildren().add(label);
+        setAlignment(label, Pos.CENTER);
+
         if (point != Point.EMPTY)
             this.getStyleClass().add(point.name().toLowerCase() + "-cell");
     }
 
+    public Label getLabel() {
+        return label;
+    }
+
     public final Point getPoint() {
         return this.point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
     }
 
     final void toggleWall() {
@@ -73,8 +88,8 @@ class Cell extends StackPane {
 
             this.point = Point.EMPTY;
             Main.getGrid().setEnds(Main.getGrid().getEnds() - 1);
-        } else if (Main.getGrid().getEnds() < Main.getGrid().getMaxNumberOfEnds()) {
-            if (Point.EMPTY == this.point) {
+        }
+            else if (Point.EMPTY == this.point) {
                 this.getStyleClass().remove("end-cell");
                 this.getStyleClass().add("end-cell");
                 this.point = Point.END;
@@ -82,7 +97,7 @@ class Cell extends StackPane {
                 Main.getGrid().setEnds(Main.getGrid().getEnds() + 1);
             }
         }
-    }
+
 
     @Override
     public final String toString() {

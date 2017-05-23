@@ -8,9 +8,7 @@ import javafx.stage.Window;
 import java.util.Arrays;
 
 class KeyboardGestures {
-
-
-    final Window main;
+    private final Window main;
     /**
      * Created by Marius Juston on 20/05/2017.
      */
@@ -25,15 +23,12 @@ class KeyboardGestures {
             this.command[1] = true;
         else if (KeyCode.L == keyCode)
             this.command[2] = true;
-        else if (KeyCode.P == keyCode)
-        {
+        else if (KeyCode.P == keyCode) {
             Main.getGrid().getMg().setCanInteractWith(false);
             Grid grid = Main.getGrid();
 
             BreathFirstSearch.breathSearch((Cell) grid.getStarts().toArray()[0], Main.getGrid());
-        }
-
-        else if (KeyCode.N == keyCode)
+        } else if (KeyCode.N == keyCode)
             this.command[3] = true;
 
         else if (KeyCode.C == keyCode) {
@@ -43,7 +38,6 @@ class KeyboardGestures {
 
 
     };
-
     //    Ctrl+S = save the grid into a file
 //    Ctrl+L = loads a grid from a file
 //    Ctrl+N = creates new empty tab
@@ -65,13 +59,17 @@ class KeyboardGestures {
         this.main = main;
     }
 
+    private TabPane getTabPane() {
+        return (TabPane) main.getScene().getRoot();
+    }
+
     private void interpretCommand() {
         if (this.command[0] && this.command[1])
             GridLoaderSaver.saveGrid(this.main);
         else if (this.command[0] && this.command[2])
             GridLoaderSaver.loadGrid(this.main);
-        else if (this.command[0] && this.command[3]){
-            ((TabPane)(main.getScene().getRoot())).getTabs().add(new Tab("Grid " + GridLoaderSaver.getNumberOfUnsavedGrids(), new Grid()));
+        else if (this.command[0] && this.command[3]) {
+            ((TabPane) (main.getScene().getRoot())).getTabs().add(new Tab("Grid " + GridLoaderSaver.getNumberOfUnsavedGrids(), new Grid(87, 63, 800, 800)));
             GridLoaderSaver.setNumberOfUnsavedGrids(GridLoaderSaver.getNumberOfUnsavedGrids() + 1);
         }
     }

@@ -2,7 +2,9 @@ import javafx.scene.layout.Pane;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 class Grid extends Pane {
 
@@ -23,15 +25,6 @@ class Grid extends Pane {
         this(Main.rows, Main.columns, Main.width, Main.height);
     }
 
-    public void setFilePath(File filePath) {
-        this.filePath = filePath;
-    }
-
-    public File getFilePath() {
-        return filePath;
-    }
-
-
     public Grid(HashSet<Cell> starts, int rows, int columns, int width, int height, int ends, int maxNumberOfStarts, int maxNumberOfEnds, MouseGestures mouseGestures, File file) {
         this.starts = starts;
         this.rows = rows;
@@ -46,14 +39,34 @@ class Grid extends Pane {
         this.mg = mouseGestures;
 
         filePath = file;
+
+        for (int row = 0; rows > row; row++) {
+            for (int column = 0; columns > column; column++) {
+                Cell cell = new Cell(column, row);
+
+                getMg().makePaintable(cell);
+                add(cell);
+            }
+        }
+
+//        getChildren().add(new Label("Hello"));
     }
 
     public Grid(int rows, int columns, int width, int height) {
         this(rows, columns, width, height, 1, 1);
     }
 
+
     private Grid(int rows, int columns, int width, int height, int maxNumberOfStarts, int maxNumberOfEnds) {
         this(new HashSet<>(), rows, columns, width, height, 0, maxNumberOfStarts, maxNumberOfEnds, new MouseGestures(true), null);
+    }
+
+    public File getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(File filePath) {
+        this.filePath = filePath;
     }
 
     public final MouseGestures getMg() {
@@ -106,7 +119,7 @@ class Grid extends Pane {
     /**
      * Add cell to array and to the UI.
      */
-    final void add(Cell cell) {
+    private final void add(Cell cell) {
 
         this.cells[cell.row][cell.column] = cell;
 
@@ -119,14 +132,38 @@ class Grid extends Pane {
         cell.setLayoutY(y);
         cell.setPrefWidth(w);
         cell.setPrefHeight(h);
+        cell.setMinWidth(w);
+        cell.setMinHeight(h);
+        cell.setMaxWidth(w);
+        cell.setMaxHeight(h);
 
         this.getChildren().add(cell);
     }
 
-    public final void removePath() {
+    final void removePath() {
         for (Cell[] c : this.cells)
-            for (Cell cell : c)
+            for (Cell cell : c) {
                 cell.getStyleClass().removeAll("path-cell", "looking-cell");
+                cell.getLabel().setText("");
+            }
+    }
+
+    Iterable<Cell> neighbors(Cell start, Cell cell, HashMap<Cell, Cell> came_from) {
+        LinkedList<Cell> list = new LinkedList<>();
+
+        if (((cell.row + 1) < getCells().length) && (Point.WALL != getCells()[cell.row + 1][cell.column].getPoint()) && !start.equals(getCells()[cell.row + 1][cell.column]) && !came_from.keySet().contains(getCells()[cell.row + 1][cell.column]))
+            list.add(getCells()[cell.row + 1][cell.column]);
+
+        if (((cell.column + 1) < getCells()[cell.row].length) && (Point.WALL != getCells()[cell.row][cell.column + 1].getPoint()) && !start.equals(getCells()[cell.row][cell.column + 1]) && !came_from.keySet().contains(getCells()[cell.row][cell.column + 1]))
+            list.add(getCells()[cell.row][cell.column + 1]);
+
+        if ((0 <= (cell.row - 1)) && (Point.WALL != getCells()[cell.row - 1][cell.column].getPoint()) && !start.equals(getCells()[cell.row - 1][cell.column]) && !came_from.keySet().contains(getCells()[cell.row - 1][cell.column]))
+            list.add(getCells()[cell.row - 1][cell.column]);
+
+        if ((0 <= (cell.column - 1)) && (Point.WALL != getCells()[cell.row][cell.column - 1].getPoint()) && !start.equals(getCells()[cell.row][cell.column - 1]) && !came_from.keySet().contains(getCells()[cell.row][cell.column - 1]))
+            list.add(getCells()[cell.row][cell.column - 1]);
+
+        return list;
     }
 
     @Override

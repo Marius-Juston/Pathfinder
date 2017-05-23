@@ -18,10 +18,12 @@ final class BreathFirstSearch {
 
         Cell current = null;
 
+//        int i = 1;
         while (!frontier.isEmpty()) {
             current = frontier.pollFirst();
 
             if (Point.EMPTY == current.getPoint()) {
+//                current.getStyleClass().remove("border-cell");
                 current.getStyleClass().remove("looking-cell");
                 current.getStyleClass().add("looking-cell");
 
@@ -30,14 +32,19 @@ final class BreathFirstSearch {
             if (Point.END == current.getPoint())
                 break;
 
-            for (Cell next : BreathFirstSearch.neighbors(current, grid)) {
+            for (Cell next : grid.neighbors(start, current, came_from)) {
                 Cell finalCurrent = current;
+//                finalCurrent.getLabel().setText(String.valueOf(i));
+
+//                current.getStyleClass().add("border-cell");
 
                 came_from.computeIfAbsent(next, cell -> {
                     frontier.add(next);
                     return finalCurrent;
                 });
             }
+
+//            i++;
         }
 //        System.out.println(came_from);
         BreathFirstSearch.createPath(start, current, came_from);
@@ -61,23 +68,5 @@ final class BreathFirstSearch {
         }
 
         return pathLength;
-    }
-
-    private static Iterable<Cell> neighbors(Cell cell, Grid grid) {
-        LinkedList<Cell> list = new LinkedList<>();
-
-        if ((0 <= (cell.column - 1)) && (Point.WALL != grid.getCells()[cell.row][cell.column - 1].getPoint()))
-            list.add(grid.getCells()[cell.row][cell.column - 1]);
-
-        if (((cell.column + 1) < grid.getCells()[cell.row].length) && (Point.WALL != grid.getCells()[cell.row][cell.column + 1].getPoint()))
-            list.add(grid.getCells()[cell.row][cell.column + 1]);
-
-        if ((0 <= (cell.row - 1)) && (Point.WALL != grid.getCells()[cell.row - 1][cell.column].getPoint()))
-            list.add(grid.getCells()[cell.row - 1][cell.column]);
-
-        if (((cell.row + 1) < grid.getCells().length) && (Point.WALL != grid.getCells()[cell.row + 1][cell.column].getPoint()))
-            list.add(grid.getCells()[cell.row + 1][cell.column]);
-
-        return list;
     }
 }

@@ -17,6 +17,7 @@ import java.util.HashSet;
 final class GridLoaderSaver {
 
     private static final FileChooser fileChooser = new FileChooser();
+    private static int numberOfUnsavedGrids = 1;
 
     static {
         GridLoaderSaver.fileChooser.getExtensionFilters().add(new ExtensionFilter("Map", "*.mp", "*.txt"));
@@ -24,8 +25,6 @@ final class GridLoaderSaver {
 
     private GridLoaderSaver() {
     }
-
-    private static int numberOfUnsavedGrids = 1;
 
     public static int getNumberOfUnsavedGrids() {
         return numberOfUnsavedGrids;
@@ -41,12 +40,11 @@ final class GridLoaderSaver {
         Grid grid = Main.getGrid();
 
         if (grid.getFilePath() == null) {
-            file = fileChooser.showOpenDialog(owner);
+            file = fileChooser.showSaveDialog(owner);
 
-            if(file != null)
+            if (file != null)
                 numberOfUnsavedGrids--;
-        }
-        else
+        } else
             file = grid.getFilePath();
 
         if (file != null) {
@@ -106,15 +104,16 @@ final class GridLoaderSaver {
                     for (int c = 0; c < columns; c++, i++) {
                         Point type = Point.values()[Integer.parseInt(stringCells[i])];
 
-                        Cell cell = new Cell(c, r, type);
-                        mouseGestures.makePaintable(cell);
+                        grid.getCells()[r][c].setPoint(type);
+
+                        if (type != Point.EMPTY)
+                            grid.getCells()[r][c].getStyleClass().add(type.name().toLowerCase() + "-cell");
 
                         if (type == Point.END)
                             ends++;
 
                         else if (type == Point.START)
-                            starts.add(cell);
-                        grid.add(cell);
+                            starts.add(grid.getCells()[r][c]);
                     }
                 }
 

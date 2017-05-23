@@ -9,14 +9,13 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 
-    private static final TabPane root = new TabPane();
-    private static Grid grid;
-
     // create grid
     static final int height = 800;
     static final int width = 800;
     static final int columns = 20;
     static final int rows = 20;
+    private static final TabPane root = new TabPane();
+    private static Grid grid;
 
     public Main() {
     }
@@ -24,6 +23,7 @@ public class Main extends Application {
     static Grid getGrid() {
         return (Grid) Main.root.getSelectionModel().getSelectedItem().getContent();
     }
+
     static Tab getTab() {
         return Main.root.getSelectionModel().getSelectedItem();
     }
@@ -54,17 +54,6 @@ public class Main extends Application {
 
 
         Main.grid = new Grid(rows, columns, width, height);
-
-        // fill grid
-        for (int row = 0; rows > row; row++) {
-            for (int column = 0; columns > column; column++) {
-
-                Cell cell = new Cell(column, row);
-
-                Main.grid.getMg().makePaintable(cell);
-                Main.grid.add(cell);
-            }
-        }
 
         tab.setContent(Main.grid);
 
